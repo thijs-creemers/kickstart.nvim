@@ -85,6 +85,49 @@ require('lazy').setup({
   -- Useful plugin to show you pending keybinds.
   { 'folke/which-key.nvim', opts = {} },
   {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons', -- optional, for icons
+      'MunifTanjim/nui.nvim',
+      -- optional: window picker
+      {
+        's1n7ax/nvim-window-picker',
+        version = '2.*',
+        config = function()
+          require 'window-picker'.setup({
+            autoselect_one = true,
+            include_current = false,
+            filter_rules = {
+              bo = {
+                filetype = { 'neo-tree', 'neo-tree-popup', 'notify' },
+                buftype = { 'terminal', 'quickfix' },
+              },
+            },
+            other_win_hl_color = '#e35e4f',
+          })
+        end,
+      },
+    },
+    config = function()
+      require('neo-tree').setup({
+        close_if_last_window = true,
+        popup_border_style = 'rounded',
+        enable_git_status = true,
+        enable_diagnostics = true,
+        filesystem = {
+          filtered_items = {
+            visible = true,
+            show_hidden_count = true,
+            hide_dotfiles = false,
+            hide_gitignored = false,
+          },
+        },
+      })
+    end,
+  },
+  {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
     opts = {
@@ -274,6 +317,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
+-- Neotree
+vim.keymap.set('n', '<leader>e', '<cmd>Neotree toggle<CR>', { desc = 'Toggle [E]xplorer (Neo-tree)' })
+
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
@@ -326,6 +372,7 @@ require('nvim-treesitter.configs').setup {
   -- Enable highlighting & indent
   highlight = {
     enable = true,
+    additional_vim_regex_highlighting = {'markdown'},
   },
   indent = {
     enable = true,
@@ -435,11 +482,30 @@ vim.keymap.set("n", "<leader>aa", function()
   require("ai.agent").query()
 end, { desc = "Ask AI (with context)" })
 
+-- Refactor using AI
+-- Normal mode keymap
+vim.keymap.set("n", "<leader>ar", function()
+  require("ai.agent").refactor()
+end, { desc = "AI Refactor: show diff and apply" })
+
+-- Visual mode keymap
+vim.keymap.set("v", "<leader>ar", function()
+  require("ai.agent").refactor()
+end, { desc = "AI Refactor (visual): show diff and apply" })
+--
 -- Ask AI command
 vim.api.nvim_create_user_command("AskAI", function()
   require("ai.agent").query()
 end, {})
 
+-- Ask AI history
+vim.api.nvim_create_user_command("AIHistory", function()
+  require("ai.agent").history_picker()
+end, {})
+
+vim.keymap.set("n", "<leader>ah", function()
+  require("ai.agent").history_picker()
+end, { desc = "View AI history" })
 
 -- Enable the following language servers
 --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -579,6 +645,21 @@ cmp.setup {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
   },
+}
+
+vim.g.markdown_fenced_languages = {
+  "ts=typescript",
+  "js=javascript",
+  "py=python",
+  "sh=bash",
+  "lua=lua",
+  "json=json",
+  "html=html",
+  "css=css",
+  "clj=clojure",
+  "cljs=clojurescript",
+  "cljc=clojure",
+  "bb=clojure",
 }
 
 local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
