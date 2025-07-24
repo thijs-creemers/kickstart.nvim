@@ -166,19 +166,6 @@ M.refactor = function()
   end)
 end
 
-M.get_context = function()
-  local mode = vim.fn.mode()
-  if mode == "v" or mode == "V" then
-    local _, ls, cs = unpack(vim.fn.getpos("'<"))
-    local _, le, ce = unpack(vim.fn.getpos("'>"))
-    local lines = vim.api.nvim_buf_get_lines(0, ls - 1, le, false)
-    lines[#lines] = string.sub(lines[#lines], 1, ce)
-    lines[1] = string.sub(lines[1], cs)
-    return table.concat(lines, "\n")
-  else
-    return table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
-  end
-end
 
 M.apply_diff = function(original_str, proposed_str)
   local proposed_lines = vim.split(proposed_str, "\n")
