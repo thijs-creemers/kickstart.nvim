@@ -743,8 +743,13 @@ require('lazy').setup({
       }
     end,
   },
-  -- Catppucin them
-  { 'catppuccin/nvim', name = 'catppuccin', priority = 1000 },
+  
+  -- Catppucin theme
+  { "catppuccin/nvim",
+     name = "catppuccin",
+     priority = 1000,
+     flavour = "frappe"
+  },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -763,6 +768,7 @@ require('lazy').setup({
       end
     end,
   },
+
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
@@ -901,6 +907,8 @@ vim.g.markdown_fenced_languages = {
   'cljc=clojure',
   'bb=clojure',
 }
+
+vim.cmd.colorscheme "catppuccin"
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
