@@ -448,6 +448,9 @@ require('lazy').setup({
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
       require('telescope').setup {
+        defaults = {
+          file_ignore_patterns = { '^%._' },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -743,13 +746,9 @@ require('lazy').setup({
       }
     end,
   },
-  
+
   -- Catppucin theme
-  { "catppuccin/nvim",
-     name = "catppuccin",
-     priority = 1000,
-     flavour = "frappe"
-  },
+  { 'catppuccin/nvim', name = 'catppuccin', priority = 1000, flavour = 'frappe' },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -818,10 +817,16 @@ require('lazy').setup({
         enable_diagnostics = true,
         filesystem = {
           filtered_items = {
-            visible = true,
+            visible = true, -- toggle with `H`
             show_hidden_count = true,
             hide_dotfiles = false,
-            hide_gitignored = false,
+            hide_gitignored = true,
+            hide_by_name = {
+              '._.*', -- dit verbergt bestanden die beginnen met ._
+            },
+            hide_by_pattern = {
+              '^%._.*',
+            },
           },
         },
       }
@@ -908,7 +913,7 @@ vim.g.markdown_fenced_languages = {
   'bb=clojure',
 }
 
-vim.cmd.colorscheme "catppuccin"
+vim.cmd.colorscheme 'catppuccin'
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
